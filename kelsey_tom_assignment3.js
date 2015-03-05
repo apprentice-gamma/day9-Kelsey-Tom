@@ -78,7 +78,7 @@ function Game(word) {
 		}
 	}
 	this.guessWasGood = function(guess) {
-		
+				
 	}
 	this.guessWasWrong = function(guess, guessIndex) {
 
@@ -101,6 +101,7 @@ function displayGreeting() {
 	console.log("You have a fixed amount of guesses, use them wisely");
 	console.log("Guess one letter at a time.");
 	console.log("Type !HINT for a hint, or !GUESSED to display guessed letters");
+	console.log("Type !Exit to exit the program");
 }
 
 function displayAllGuessedLetters(guesses) {

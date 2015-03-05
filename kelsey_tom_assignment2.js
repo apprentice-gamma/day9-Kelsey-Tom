@@ -40,7 +40,7 @@ function clearScreen() {
 }
 
 function cleanseInput(word){
-	return dropNonAlphabet(word.toString());
+	return dropNonAlphabet(word.toString().toLowerCase());
 }
 
 function playAgain(){

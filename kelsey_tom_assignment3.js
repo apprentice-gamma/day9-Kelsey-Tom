@@ -45,7 +45,7 @@ function Game(word) {
 	this.attempts =  6;
 	this.hintsLeft = 2;
 	this.totalGuesses = [];
-	this.guessedWord = new Array(toGuessArray.length);
+	this.guessedWord = new Array(this.toGuessArray.length);
 	this.generateHint = function() {
 		var hint = " ";
 		if (this.hintsLeft > 0) { 
@@ -93,6 +93,32 @@ function startGame() {
 
 	displayGreeting();
 
+}
+
+function getUserInput() {
+	var userInput = sget("What letter would you like to guess?");
+	return userInput;
+}
+
+console.log(getUserInput());
+
+function directInput(userInput) {
+	switch(userInput){
+		case "!HINT":
+			break;
+		case "!EXIT":
+			exitProgram();
+			break;
+		case "!GUESSED":
+			break;
+		default:
+			clenseGuess(userInput);
+			break;
+	}
+}
+
+function exitProgram(){
+	console.log("Thanks for Playing! Sorry to see you leave!");
 }
 
 function displayGreeting() {

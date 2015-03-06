@@ -49,13 +49,19 @@ function Game(word) {
 	this.generateHint = function() {
 		var hint = " ";
 		if (this.hintsLeft > 0) { 
-			hint = this.toGuessArray[getRandomInt(0, this.toGuessArray.length)];
+			var letter = false;
+			while (letter === false) {
+				hint = this.toGuessArray[getRandomInt(0, this.toGuessArray.length)];
+				if (hint.match(/[a-z]/)){
+					letter = true;
+				}	
+			}
 			this.hintsLeft -= 1;
 			console.log("Your Hint is: " + hint);
-		
+			displayDuringGame();
 		} else {	
 			console.log("Sorry! You have no hints left!");
-		
+			displayDuringGame();
 		}
 	}
 
@@ -66,34 +72,85 @@ function Game(word) {
 			this.checkIfGuessCorrect(guess);
 		} else {
 			console.log("You've already guessed " + guess + " please try again.");
+			displayDuringGame();
 		}
 	} 
 
 	this.checkIfGuessCorrect = function(guess) {
 		var guessIndex = this.toGuessArray.indexOf(guess);
+		this.totalGuesses.push(guess);
 		if (guessIndex === -1) {
 			this.guessWasWrong(guess);
 		} else {
-			this.guessWasGood(guess, guessIndex);
+			this.guessWasGood(guess);
 		}
 	}
 	this.guessWasGood = function(guess) {
-				
+		for (var i =0; i< this.toGuessArray.length; i++) {
+			if (this.toGuessArray[i] === guess){
+				this.guessedWord[i] = guess;
+				this.toGuessArray[i] = '_';
+			}
+		}
+		console.log("Your current board is: "+ this.guessedWord.join(""));
+		if (this.checkEndGame()){
+			endGameHappy();
+		} else {
+			displayDuringGame();
+		}
 	}
-	this.guessWasWrong = function(guess, guessIndex) {
-
+	this.guessWasWrong = function() {
+		this.attempts -= 1;
+		console.log("Sorry not part of this word. you have " + this.attempts + " left. Good Luck!");
+		if (this.attempts <=0) {
+			endGameSad();
+		} else {
+			displayDuringGame();
+		}
+	}
+	this.checkEndGame = function() {
+		return this.guessedWord.join("") === this.wordToGuess;
 	}
 
+}
+
+function endGameHappy() {
+	console.log("CONGRATS!!! YOU WON!!");
+	var answer = sget("Would you like to start a new game? (y/n)").trim();
+	if (answer === 'y') {
+		newGame = new Game(wordList[getRandomInt(0, wordList.length)]);
+		startGame();
+	} else {
+		exitProgram();
+	}
+}
+
+function endGameSad() {
+	console.log("BOOOO You didn't guess: " + newGame.wordToGuess);
+	console.log("ALL YOUR LETTERS ARE BELONG TO US!!!!")
+	var answer = sget("Would you like to start a new game? (y/n)").trim();
+	if (answer === 'y') {
+		newGame = new Game(wordList[getRandomInt(0, wordList.length)]);
+		startGame();
+	} else {
+		exitProgram();
+	}
 }
 
 var newGame = new Game(wordList[getRandomInt(0, wordList.length)]);
 
 function startGame() {
 	
-
 	displayGreeting();
 	directInput(getUserInput());
 
+}
+
+function displayDuringGame() {
+	console.log("Guess one letter at a time.");
+	console.log("Type !HINT, !GUESSED, or !Exit");
+	console.log("Your current board is: " + newGame.guessedWord);
+	directInput(getUserInput());
 }
 
 startGame();
@@ -125,7 +182,7 @@ function exitProgram(){
 
 function clenseGuess(userInput) {
 	if (userInput.toLowerCase().match(/[a-z]/) && userInput.length === 1){
-		console.log("HI");
+		newGame.checkIfGuessIsUsed(userInput);
 	} else {
 		directInput(getUserInput());
 	}
@@ -133,7 +190,7 @@ function clenseGuess(userInput) {
 
 function displayGreeting() {
 	console.log("Welcome to Hangman!");
-	console.log("A Random word has been generated");
+	console.log("A Random word has been generated it is " + newGame.wordToGuess.length + "character's long!");
 	console.log("You have a fixed amount of guesses, use them wisely");
 	console.log("Guess one letter at a time.");
 	console.log("Type !HINT for a hint, or !GUESSED to display guessed letters");
@@ -142,8 +199,8 @@ function displayGreeting() {
 
 function displayAllGuessedLetters(guesses) {
 	console.log("Letters Used:");
-	console.log("-------------");
-	console.log(guesses.join());
+	console.log(guesses.join(''));
+	displayDuringGame();
 }
 
 

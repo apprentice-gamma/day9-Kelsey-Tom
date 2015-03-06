@@ -92,24 +92,26 @@ function startGame() {
 	
 
 	displayGreeting();
+	directInput(getUserInput());
 
 }
 
+startGame();
 function getUserInput() {
-	var userInput = sget("What letter would you like to guess?");
+	var userInput = sget("What letter would you like to guess?").trim();
 	return userInput;
 }
-
-console.log(getUserInput());
 
 function directInput(userInput) {
 	switch(userInput){
 		case "!HINT":
+			newGame.generateHint();
 			break;
 		case "!EXIT":
 			exitProgram();
 			break;
 		case "!GUESSED":
+			displayAllGuessedLetters(newGame.totalGuesses);
 			break;
 		default:
 			clenseGuess(userInput);
@@ -119,6 +121,14 @@ function directInput(userInput) {
 
 function exitProgram(){
 	console.log("Thanks for Playing! Sorry to see you leave!");
+}
+
+function clenseGuess(userInput) {
+	if (userInput.toLowerCase().match(/[a-z]/) && userInput.length === 1){
+		console.log("HI");
+	} else {
+		directInput(getUserInput());
+	}
 }
 
 function displayGreeting() {
